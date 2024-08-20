@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TweetType {
+  Tweet
+  Reply
+}
+
+model User {
+  id        String     @id @default(uuid()) @db.Uuid
+  name      String     @db.VarChar(60)
+  email     String     @unique @db.VarChar(100)
+  password  String     @db.VarChar(80)
+  username  String     @unique @db.VarChar(40)
+  Tweet     Tweet[]
+  Retweets  Retweet[]
+  Followers Follower[]
+  Likes     Like[]
+
+  @@map("user")
+}
+
+model Tweet {
+  id       String    @id @default(uuid()) @db.Uuid
+  content  String    @db.VarChar(200)
+  type     TweetType @default(Tweet)
+  userId   String    @map("user_id") @db.Uuid
+  user     User      @relation(fields: [userId], references: [id])
+  Likes    Like[]
+  Retweets Retweet[]
+
+  @@map("tweet")
+}
+
+model Like {
+  id      String @id @default(uuid()) @db.Uuid
+  userId  String @map("user_id") @db.Uuid
+  tweetId String @map("tweet_id") @db.Uuid
+  user    User   @relation(fields: [userId], references: [id])
+  tweet   Tweet  @relation(fields: [tweetId], references: [id])
+
+  @@map("like")
+}
+
+model Retweet {
+  id      String @id @default(uuid()) @db.Uuid
+  tweetId String @map("tweet_id") @db.Uuid
+  tweet   Tweet  @relation(fields: [tweetId], references: [id])
+  userId  String @map("user_id") @db.Uuid
+  user    User   @relation(fields: [userId], references: [id])
+
+  @@map("retweet")
+}
+
+model Follower {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @map("user_id") @db.Uuid
+  User   User   @relation(fields: [userId], references: [id])
+
+  @@map("follower")
+}
