@@ -1,17 +1,18 @@
-import { Router } from "express"
-import LikeController from "../controller/like.controller"
+import { Router } from "express";
+import LikeController from "../controller/like.controller";
+import authMiddleware from "../middleware/auth.middleware";
 
 const routes = () => {
-    const router = Router()
-    const controller = new LikeController()
+  const router = Router();
+  const controller = new LikeController();
 
-    router.post('/', controller.create)
-    router.get('/', controller.list)
-    router.get('/:id', controller.show)
-    router.put('/:id', controller.update)
-    router.delete('/:id', controller.delete)
+  router.post("/", authMiddleware, controller.create);
+  router.get("/", authMiddleware, controller.list);
+  router.get("/:id", authMiddleware, controller.show);
+  router.put("/:id", authMiddleware, controller.update);
+  router.delete("/:id", authMiddleware, controller.delete);
 
-    return router
-}
+  return router;
+};
 
-export default routes
+export default routes;
