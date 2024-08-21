@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv'
 import userRoutes from './routes/user.routes'
 import tweetRoutes from './routes/tweet.routes'
 import likeRoutes from './routes/like.routes'
+import authRoutes from './routes/auth.routes'
 
 dotenv.config()
 const app = express()
@@ -16,6 +17,7 @@ const PORT = process.env.PORT
 app.use("/user", userRoutes())
 app.use("/tweet", tweetRoutes())
 app.use("/like", likeRoutes())
+app.use("/auth", authRoutes())
 
 
 

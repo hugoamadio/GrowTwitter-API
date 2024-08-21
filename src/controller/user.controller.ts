@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import db from "../database/prisma.connection";
+import { v4 as uuid } from 'uuid'
 
 class UserController {
   public async create(req: Request, res: Response) {
@@ -17,12 +18,14 @@ class UserController {
           .json({ success: false, msg: "Email already registered" });
       }
       const hashPass = await bcrypt.hash(password, 10);
+      const token = uuid()
       const userCreated = await db.user.create({
         data: {
           email,
           name,
           password: hashPass,
           username,
+          token
         },
       });
       if (userCreated) {
